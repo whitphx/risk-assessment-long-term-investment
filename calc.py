@@ -41,33 +41,7 @@ def calc_long_term_investment_statistics(
     sharpe_ratio = mean / std
     p_loss_of_principal = np.mean(realized_total_returns < 0, axis=0)
 
-    print("Mean")
-    print(mean)
-    print("Standard deviation")
-    print(std)
-    print("Sharpe ratio")
-    print(sharpe_ratio)
-    print("P(loss of principal)")
-    print(p_loss_of_principal)
-
-    if out_filepath:
-        fig, axs = plt.subplots(3, 1)
-        year_vals = np.arange(1, years + 1)
-
-        axs[0].xaxis.set_ticks(year_vals)
-        axs[0].plot(year_vals, mean, label="Mean")
-        axs[0].plot(year_vals, std, label="Standard deviation")
-        axs[0].legend()
-
-        axs[1].xaxis.set_ticks(year_vals)
-        axs[1].plot(year_vals, sharpe_ratio, label="Mean/Standard deviation")
-        axs[1].legend()
-
-        axs[2].xaxis.set_ticks(year_vals)
-        axs[2].plot(year_vals, p_loss_of_principal, label="P(loss of principal)")
-        axs[2].legend()
-
-        plt.savefig(out_filepath)
+    return mean, std, sharpe_ratio, p_loss_of_principal
 
 
 if __name__ == "__main__":
@@ -82,10 +56,38 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.INFO)
 
-    calc_long_term_investment_statistics(
+    mean, std, sharpe_ratio, p_loss_of_principal = calc_long_term_investment_statistics(
         yearly_average=args.yearly_average,
         yearly_stddev=args.yearly_stddev,
         years=args.years,
         n_samples=args.n_samples,
         out_filepath=args.save_fig,
     )
+
+    print("Mean")
+    print(mean)
+    print("Standard deviation")
+    print(std)
+    print("Sharpe ratio")
+    print(sharpe_ratio)
+    print("P(loss of principal)")
+    print(p_loss_of_principal)
+
+    if args.save_fig:
+        fig, axs = plt.subplots(3, 1)
+        year_vals = np.arange(1, args.years + 1)
+
+        axs[0].xaxis.set_ticks(year_vals)
+        axs[0].plot(year_vals, mean, label="Mean")
+        axs[0].plot(year_vals, std, label="Standard deviation")
+        axs[0].legend()
+
+        axs[1].xaxis.set_ticks(year_vals)
+        axs[1].plot(year_vals, sharpe_ratio, label="Mean/Standard deviation")
+        axs[1].legend()
+
+        axs[2].xaxis.set_ticks(year_vals)
+        axs[2].plot(year_vals, p_loss_of_principal, label="P(loss of principal)")
+        axs[2].legend()
+
+        plt.savefig(args.save_fig)
